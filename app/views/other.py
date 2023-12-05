@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.filters import SearchFilter
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 
@@ -18,3 +19,7 @@ class ItemViewSet(viewsets.ModelViewSet):
     serializer_class = ItemSerializer
     permission_classes = [IsAuthorOrReadOnly, ]
     parser_classes = [MultiPartParser, ]
+    filter_backends = [SearchFilter, ]
+    search_fields = ['name', 'description']
+
+
