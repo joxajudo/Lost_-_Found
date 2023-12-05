@@ -17,6 +17,7 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, phone_number, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True')
@@ -56,6 +57,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
 
+class UserProfile(models.Model):
+    class Gender(models.TextChoices):
+        MALE = 'MALE'
+        FEMALE = 'FEMALE'
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=Gender.choices)
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
@@ -81,12 +92,19 @@ class Item(models.Model):
     )
     date = models.DateField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = 'Items'
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
+    content = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+    related_item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='related_item')

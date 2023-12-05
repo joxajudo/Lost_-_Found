@@ -11,3 +11,9 @@ class IsAuthorOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return request.user == obj.user
+
+
+class IsSenderOrReciever(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Allow access only if the requesting user is the sender or receiver of the message.
+        return obj.sender == request.user or obj.receiver == request.user
