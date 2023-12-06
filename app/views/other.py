@@ -2,11 +2,10 @@ from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 
-from app.models import Category, Item
+from app.models import Category, Item, User
 from app.permission import IsAuthorOrReadOnly
-from app.serializers.other import CategorySerializer, ItemSerializer
+from app.serializers.other import CategorySerializer, ItemSerializer, UserSerializer
 
 
 class CategoryViewSet(ListAPIView):
@@ -32,4 +31,6 @@ class ItemViewSet(RetrieveUpdateDestroyAPIView):
     search_fields = ['name', 'description']
 
 
-
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
