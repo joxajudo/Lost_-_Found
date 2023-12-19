@@ -86,14 +86,29 @@ class Item(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='images/')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    contact_info = models.CharField(max_length=255)
+    phone_validator = RegexValidator(
+        regex=r'^\+998\d{9}$',
+        message="Yaroqsiz telefon raqam!"
+    )
+    contact_info = models.CharField(
+        max_length=25,
+        validators=[phone_validator],
+        null=True,
+        blank=True,
+        unique=True
+    )
     type = models.CharField(
         max_length=100, choices=Type.choices, default=Type.FOUND
     )
-    date = models.DateField(auto_now_add=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    country = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    street = models.CharField(max_length=255, blank=True, null=True)
+    zipcode = models.CharField(max_length=255, blank=True, null=True)
+    more = models.CharField(max_length=255, blank=True, null=True)
+    date = models.DateTimeField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.name

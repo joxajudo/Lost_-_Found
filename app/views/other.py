@@ -2,6 +2,10 @@ from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.parsers import MultiPartParser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from geopy.geocoders import Nominatim  # Install geopy if not already installed
 
 from app.models import Category, Item, User
 from app.permission import IsAuthorOrReadOnly
@@ -19,7 +23,7 @@ class ItemListCreateAPIView(ListCreateAPIView):
     permission_classes = [IsAuthorOrReadOnly, ]
     parser_classes = [MultiPartParser, ]
     filter_backends = [SearchFilter, ]
-    search_fields = ['name', 'description']
+    search_fields = ['name','country','city']
 
 
 class ItemViewSet(RetrieveUpdateDestroyAPIView):
@@ -28,7 +32,7 @@ class ItemViewSet(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthorOrReadOnly, ]
     parser_classes = [MultiPartParser, ]
     filter_backends = [SearchFilter, ]
-    search_fields = ['name', 'description']
+    search_fields = ['name','country','city']
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
