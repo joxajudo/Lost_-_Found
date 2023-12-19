@@ -82,9 +82,34 @@ class Item(models.Model):
         LOST = 'LOST',
         FOUND = 'FOUND'
 
+    type = models.CharField(
+        max_length=100, choices=Type.choices, default=Type.FOUND
+    )
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    date = models.DateField()
     image = models.ImageField(upload_to='images/')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    brand = models.CharField(max_length=255)
+    class Colors(models.TextChoices):
+        black = 'Black',
+        blue = 'Blue'
+        brown_tan = 'Brown - Tan'
+        gold = 'Gold'
+        gray = 'Gray'
+        green = 'Green'
+        maron = 'Maroon'
+        orange = 'Orange'
+        peach = 'Peach'
+        pink = 'Pink'
+        platinum = 'Platinum'
+        red = 'Red'
+        silver = 'Silver'
+        white = 'White'
+        yellow = 'Yellow'
+    primary_color = models.CharField(max_length=100, choices=Colors.choices)
+    secondary_color = models.CharField(max_length=100, choices=Colors.choices)
+    specific_description = models.TextField()
+    specific_location = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     phone_validator = RegexValidator(
         regex=r'^\+998\d{9}$',
@@ -97,9 +122,6 @@ class Item(models.Model):
         blank=True,
         unique=True
     )
-    type = models.CharField(
-        max_length=100, choices=Type.choices, default=Type.FOUND
-    )
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     country = models.CharField(max_length=255)
@@ -107,9 +129,6 @@ class Item(models.Model):
     street = models.CharField(max_length=255, blank=True, null=True)
     zipcode = models.CharField(max_length=255, blank=True, null=True)
     more = models.CharField(max_length=255, blank=True, null=True)
-    date = models.DateTimeField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
     def __str__(self):
         return self.name
 
