@@ -1,12 +1,20 @@
 from rest_framework import serializers
 
-from app.models import Category, Item, User
+from app.models import Category, Item, User, SubCategory
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ['id', 'name']
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    subcategories = SubCategorySerializer(many=False, read_only=False)
+
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['id', 'name', 'subcategories']
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -21,4 +29,3 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'phone_number')
-

@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         unique=True
     )
-    username = models.CharField(max_length=155, unique=False, null=True, blank=True)
+    username = models.CharField(max_length=155, unique=False)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, null=True, blank=True)
@@ -77,6 +77,14 @@ class Category(models.Model):
         verbose_name_plural = 'Categories'
 
 
+class SubCategory(models.Model):
+    category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.category.name} - {self.name}"
+
+
 class Item(models.Model):
     class Type(models.TextChoices):
         LOST = 'LOST',
@@ -89,7 +97,9 @@ class Item(models.Model):
     date = models.DateField()
     image = models.ImageField(upload_to='images/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     brand = models.CharField(max_length=255)
+
     class Colors(models.TextChoices):
         black = 'Black',
         blue = 'Blue'
@@ -106,6 +116,7 @@ class Item(models.Model):
         silver = 'Silver'
         white = 'White'
         yellow = 'Yellow'
+
     primary_color = models.CharField(max_length=100, choices=Colors.choices)
     secondary_color = models.CharField(max_length=100, choices=Colors.choices)
     specific_description = models.TextField()
@@ -129,6 +140,7 @@ class Item(models.Model):
     street = models.CharField(max_length=255, blank=True, null=True)
     zipcode = models.CharField(max_length=255, blank=True, null=True)
     more = models.CharField(max_length=255, blank=True, null=True)
+
     def __str__(self):
         return self.name
 
