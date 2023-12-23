@@ -39,6 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         unique=True
     )
+    image = models.ImageField(upload_to='images/')
     username = models.CharField(max_length=155, unique=False)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -56,18 +57,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         super().save(*args, **kwargs)
 
-#dfsfdf
+
 class UserProfile(models.Model):
     class Gender(models.TextChoices):
         MALE = 'MALE'
         FEMALE = 'FEMALE'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/')
     gender = models.CharField(max_length=10, choices=Gender.choices)
 
 
 class Category(models.Model):
+    image = models.ImageField(upload_to='images/')
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -78,6 +80,7 @@ class Category(models.Model):
 
 
 class SubCategory(models.Model):
+    image = models.ImageField(upload_to='images/')
     category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
 
@@ -148,9 +151,35 @@ class Item(models.Model):
         verbose_name_plural = 'Items'
 
 
+class UserProfile(models.Model):
+    class Gender(models.TextChoices):
+        MALE = 'MALE'
+        FEMALE = 'FEMALE'
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=Gender.choices)
+
+
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
     content = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     related_item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='related_item')
+
+
+class AboutCategory(models.Model):
+    name = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name
+
+
+class About(models.Model):
+    name = models.ForeignKey(AboutCategory, on_delete=models.CASCADE)
+    question = models.TextField()
+    title = models.TextField()
+
+    def __str__(self):
+        return f'{self.title}'

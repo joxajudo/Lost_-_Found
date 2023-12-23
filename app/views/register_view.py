@@ -25,7 +25,7 @@ class RegisterView(APIView):
         if serializer.is_valid():
             phone_number = serializer.validated_data['phone_number']
             verification_code = genereation_verification_code()
-            expiration_time = timezone.now() + timedelta(minutes=1)
+            expiration_time = timezone.now() + timedelta(minutes=5)
             serializer.save(verification_code=verification_code, activation_key_expires=expiration_time)
             send_sms(message=f"Tasdiqlash kodi: {verification_code}", recipient=phone_number)
             message = "Tasdiqlash kodi yuborildi. Iltimos SMS orqali tasdiqlab yuboring."

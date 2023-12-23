@@ -7,9 +7,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from geopy.geocoders import Nominatim  # Install geopy if not already installed
 
-from app.models import Category, Item, User, SubCategory
+from app.models import Category, Item, User, SubCategory, About, AboutCategory
 from app.permission import IsAuthorOrReadOnly
-from app.serializers.other import CategorySerializer, ItemSerializer, UserSerializer, SubCategorySerializer
+from app.serializers.other import CategorySerializer, ItemSerializer, UserSerializer, SubCategorySerializer, \
+    AboutSerializer, AboutCategorySerializer
 
 
 class CategoryViewSet(ListAPIView):
@@ -20,6 +21,16 @@ class CategoryViewSet(ListAPIView):
 class SubCategoryViewSet(ListAPIView):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
+
+
+class AboutCategoryViewSet(ListAPIView):
+    queryset = AboutCategory.objects.all()
+    serializer_class = AboutCategorySerializer
+
+
+class AboutViewSet(ListAPIView):
+    queryset = About.objects.all()
+    serializer_class = AboutSerializer
 
 
 class ItemListCreateAPIView(ListCreateAPIView):
@@ -43,3 +54,20 @@ class ItemViewSet(RetrieveUpdateDestroyAPIView):
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class ItembyUserAPIView(ListAPIView):
+    serializer_class = ItemSerializer
+
+    def get_queryset(self):
+        user = self.kwargs['user_id']
+        return Item.objects.filter(user=user).all()
+
+
+# class CurrentUserView(APIView):
+#     permission_classes = [IsAuthenticated, ]
+#
+#     def get(self, request):
+#         user = request.user
+#         serializer = UserModelSerializer(user)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
