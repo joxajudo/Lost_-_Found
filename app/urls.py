@@ -5,8 +5,10 @@ from app.views.forgot_password import ForgotPasswordView, VerifyForgotPhoneNumbe
 from app.views.login_view import LoginAPIView
 from app.views.logout_view import LogoutAPIView
 from app.views.message import MessageListCreateAPIView, MessageRetrieveAPIView
-from app.views.other import ItemViewSet, ItemListCreateAPIView, CategoryViewSet, UserViewSet, SubCategoryViewSet, \
-    AboutViewSet, AboutCategoryViewSet, ItembyUserAPIView
+from app.views.other import (ItemListCreateAPIView, ItemViewSet, CategoryViewSet, SubCategoryViewSet,
+                             ItembyCategoryAPIView, ItembyTypeAPIView, ItembyUserAPIView, CurrentUserView,
+                             ItembyRequestUserView, AboutCategoryViewSet, AboutViewSet, UserViewSet
+                             )
 from app.views.register_view import RegisterView
 from app.views.verification_code import VerifyPhoneNumberView
 from rest_framework.routers import DefaultRouter
@@ -39,7 +41,11 @@ urlpatterns = [
     path('sub_category/', SubCategoryViewSet.as_view(), name='sub_category'),
 
     # Item by user
-    path('items/', ItembyUserAPIView.as_view(), name='itembyUserRequest'),
+    path('item/category/<int:category_id>/', ItembyCategoryAPIView.as_view(), name='itembyCategory'),
+    path('item/category/<str:type>/', ItembyTypeAPIView.as_view(), name='itembyType'),
+    path('item/user/<int:user_id>/', ItembyUserAPIView.as_view(), name='itembyUser'),
+    path('current-user/', CurrentUserView.as_view(), name='current-user'),
+    path('items/', ItembyRequestUserView.as_view(), name='itembyUserRequest'),
 
     # Category
     path('about-category/', AboutCategoryViewSet.as_view(), name='about-category'),
