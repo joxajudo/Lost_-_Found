@@ -30,7 +30,6 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Category
         fields = ['id', 'image', 'name']
@@ -46,3 +45,5 @@ class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+# I made many changes in this site
