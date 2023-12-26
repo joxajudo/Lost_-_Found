@@ -124,9 +124,7 @@ class Item(models.Model):
         max_length=25,
         validators=[phone_validator],
         null=True,
-        blank=True,
-        unique=True
-    )
+        blank=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     country = models.CharField(max_length=255)
