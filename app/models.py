@@ -58,15 +58,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
 
-class UserProfile(models.Model):
-    class Gender(models.TextChoices):
-        MALE = 'MALE'
-        FEMALE = 'FEMALE'
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/')
-    gender = models.CharField(max_length=10, choices=Gender.choices)
-
 
 class Category(models.Model):
     image = models.ImageField(upload_to='images/')
@@ -186,8 +177,10 @@ class About(models.Model):
 
 
 class NewsLetter(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='NewsLetter')
-    message = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, blank=True, null=True)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user}\n{self.message}'
+        return f'{self.user.username} - {self.created_at}'

@@ -67,7 +67,7 @@ class UserModelSerializer(serializers.ModelSerializer):
 class NewsLetterSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsLetter
-        fields = ['message']
+        fields = ['id','comment','created_at']
 
 
 from rest_framework import serializers

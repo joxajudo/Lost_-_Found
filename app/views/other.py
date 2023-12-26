@@ -124,18 +124,23 @@ class CurrentUserView(APIView):
         serializer = UserModelSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class NewsLetterViewSet(CreateAPIView):
+class NewsLetterViewSet(generics.ListCreateAPIView):
     queryset = NewsLetter.objects.all()
     serializer_class = NewsLetterSerializer
+
+    def perform_create(self, serializer):
+
+        # Ensure the user has a profile before attempting to use it
+        user = self.request.user
+        profile = UserProfile.objects.get(user=user)
+        serializer.save(user=user, profile=profile)
+
+
+class UserProfileListCreateView(generics.ListCreateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
-
-
-# class UserProfileListCreateView(generics.ListCreateAPIView):
-#     queryset = UserProfile.objects.all()
-#     serializer_class = UserProfileSerializer
-#     permission_classes = [IsAuthenticated]
-#     parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser]
 #
 #
 # class UserProfileDetailView(UpdateAPIView):
