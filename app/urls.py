@@ -7,7 +7,8 @@ from app.views.logout_view import LogoutAPIView
 from app.views.message import MessageListCreateAPIView, MessageRetrieveAPIView
 from app.views.other import (ItemListCreateAPIView, ItemViewSet, CategoryViewSet, SubCategoryViewSet,
                              ItembyCategoryAPIView, ItembyTypeAPIView, ItembyUserAPIView, CurrentUserView,
-                             ItembyRequestUserView, AboutCategoryViewSet, AboutViewSet, UserViewSet, NewsLetterViewSet
+                             ItembyRequestUserView, AboutCategoryViewSet, AboutViewSet, UserViewSet, NewsLetterViewSet,
+                    UserUpdateView
                              )
 from app.views.register_view import RegisterView
 from app.views.verification_code import VerifyPhoneNumberView
@@ -47,12 +48,16 @@ urlpatterns = [
     path('item/category/<str:type>/', ItembyTypeAPIView.as_view(), name='itembyType'),
     path('item/user/<int:user_id>/', ItembyUserAPIView.as_view(), name='itembyUser'),
     path('current-user/', CurrentUserView.as_view(), name='current-user'),
-    path('items/', ItembyRequestUserView.as_view(), name='itembyUserRequest'),
+
+    path('itemss/', ItembyRequestUserView.as_view(), name='itembyUserRequest'),
 
     # Category
     path('about-category/', AboutCategoryViewSet.as_view(), name='about-category'),
     path('about/', AboutViewSet.as_view(), name='about'),
     path('news-letter/', NewsLetterViewSet.as_view(), name='news-letter'),
+
+    # User-Profile
+    path('profile/edit/', UserUpdateView.as_view(), name='profile-edit'),
 
     path('', include(router.urls))
 ]

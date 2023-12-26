@@ -186,4 +186,8 @@ class About(models.Model):
 
 
 class NewsLetter(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='NewsLetter')
     message = models.TextField()
+
+    def __str__(self):
+        return f'{self.user}\n{self.message}'
