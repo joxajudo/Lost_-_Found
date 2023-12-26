@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from app.models import Category, Item, User, SubCategory, About, AboutCategory
+from app.models import Category, Item, User, SubCategory, About, AboutCategory, NewsLetter
 
 
 class AboutCategorySerializer(serializers.ModelSerializer):
@@ -46,4 +46,9 @@ class UserModelSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
+
+class NewsLetterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsLetter
+        fields = '__all__'
 # I made many changes in this site

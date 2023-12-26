@@ -120,8 +120,8 @@ class Item(models.Model):
         white = 'White'
         yellow = 'Yellow'
 
-    primary_color = models.CharField(max_length=100, choices=Colors.choices)
-    secondary_color = models.CharField(max_length=100, choices=Colors.choices)
+    primary_color = models.CharField(max_length=100, choices=Colors.choices, default=Colors.black)
+    secondary_color = models.CharField(max_length=100, choices=Colors.choices, default=Colors.black)
     specific_description = models.TextField()
     specific_location = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -158,7 +158,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
-    gender = models.CharField(max_length=10, choices=Gender.choices)
+    gender = models.CharField(max_length=10, choices=Gender.choices, default=Gender)
 
 
 class Message(models.Model):
@@ -183,3 +183,7 @@ class About(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+
+class NewsLetter(models.Model):
+    message = models.TextField()

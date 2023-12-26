@@ -1,17 +1,18 @@
 from rest_framework import viewsets, generics
 from rest_framework.filters import SearchFilter
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, CreateAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from geopy.geocoders import Nominatim  # Install geopy if not already installed
+from unicodedata import category
 
-from app.models import Category, Item, User, SubCategory, About, AboutCategory
+from app.models import Category, Item, User, SubCategory, About, AboutCategory, NewsLetter
 from app.permission import IsAuthorOrReadOnly
 from app.serializers.other import CategorySerializer, ItemSerializer, UserSerializer, SubCategorySerializer, \
-    AboutSerializer, AboutCategorySerializer, UserModelSerializer
+    AboutSerializer, AboutCategorySerializer, UserModelSerializer, NewsLetterSerializer
 
 
 class CategoryViewSet(ListAPIView):
@@ -81,15 +82,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
 
 
-# class ProfilMeView(generics.RetrieveAPIView):
-#     permission_classes = [IsAuthenticated]
-
-#     serializer_class = UserModelSerializer
-
-#     def get_object(self):
-#         return self.request.user
-
-
 class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -106,3 +98,8 @@ class ItembyRequestUserView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Item.objects.filter(user=user).all()
+
+
+class NewsLetterViewSet(CreateAPIView):
+    queryset = NewsLetter.objects.all()
+    serializer_class = NewsLetterSerializer

@@ -7,7 +7,7 @@ from app.views.logout_view import LogoutAPIView
 from app.views.message import MessageListCreateAPIView, MessageRetrieveAPIView
 from app.views.other import (ItemListCreateAPIView, ItemViewSet, CategoryViewSet, SubCategoryViewSet,
                              ItembyCategoryAPIView, ItembyTypeAPIView, ItembyUserAPIView, CurrentUserView,
-                             ItembyRequestUserView, AboutCategoryViewSet, AboutViewSet, UserViewSet
+                             ItembyRequestUserView, AboutCategoryViewSet, AboutViewSet, UserViewSet, NewsLetterViewSet
                              )
 from app.views.register_view import RegisterView
 from app.views.verification_code import VerifyPhoneNumberView
@@ -17,6 +17,8 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
+    # User Profile
+
     # Register
     path("register/", RegisterView.as_view(), name='register'),
     path("register-verify/", VerifyPhoneNumberView.as_view(), name='register-verify'),
@@ -50,5 +52,7 @@ urlpatterns = [
     # Category
     path('about-category/', AboutCategoryViewSet.as_view(), name='about-category'),
     path('about/', AboutViewSet.as_view(), name='about'),
+    path('news-letter/', NewsLetterViewSet.as_view(), name='news-letter'),
+
     path('', include(router.urls))
 ]
