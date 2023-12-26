@@ -134,8 +134,10 @@ class NewsLetterViewSet(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
     def get(self, request, *args, **kwargs):
-        response = super().get(request, *args, **kwargs)
-        return response
+        # Barcha xabarlarni olish
+        queryset = self.queryset.all()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserProfileListCreateView(generics.ListCreateAPIView):
