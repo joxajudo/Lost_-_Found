@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from app.models import Category, Item, User, SubCategory, About, AboutCategory, NewsLetter, UserProfile
-
+from django.core.validators import MinLengthValidator
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -10,7 +10,7 @@ User = get_user_model()
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'image']
+        fields = ['username', 'image','password','phone_number']
 
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)
@@ -65,9 +65,16 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 
 class NewsLetterSerializer(serializers.ModelSerializer):
+    user_username = serializers.ReadOnlyField(source='user.username', read_only=True)
+    user_image = serializers.ReadOnlyField(source='user.image.url', read_only=True)
+
     class Meta:
         model = NewsLetter
-        fields = ['id','comment','created_at']
+        fields = ['id','user','user_username', 'user_image', 'comment', 'created_at']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super(NewsLetterSerializer, self).create(validated_data)
 
 
 from rest_framework import serializers
@@ -76,6 +83,13 @@ from rest_framework import serializers
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['user', 'image', 'gender']  # Include any other fields you want to expose through the API.
+        fields = ['image', 'gender']  # Include any other fields you want to expose through the API.
 
+class ExtendedUserProfileSerializer(UserProfileSerializer):
+    phone_number = serializers.CharField(allow_blank=True)
+    password = serializers.CharField(write_only=True, validators=[MinLengthValidator(limit_value=8)])
+    password_confirm = serializers.CharField(write_only=True)
+
+    class Meta(UserProfileSerializer.Meta):
+        fields = UserProfileSerializer.Meta.fields + ['phone_number', 'password', 'password_confirm']
 # I made many changes in this site

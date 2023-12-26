@@ -9,12 +9,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from geopy.geocoders import Nominatim  # Install geopy if not already installed
 from unicodedata import category
-
+from rest_framework.decorators import api_view, permission_classes
 from app.models import Category, Item, User, SubCategory, About, AboutCategory, NewsLetter, UserProfile
 from app.permission import IsAuthorOrReadOnly
 from app.serializers.other import CategorySerializer, ItemSerializer, UserSerializer, SubCategorySerializer, \
     AboutSerializer, AboutCategorySerializer, UserModelSerializer, NewsLetterSerializer, UserProfileSerializer, \
-    UserUpdateSerializer
+    UserUpdateSerializer, ExtendedUserProfileSerializer
 
 
 class CategoryViewSet(ListAPIView):
@@ -124,16 +124,18 @@ class CurrentUserView(APIView):
         serializer = UserModelSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class NewsLetterViewSet(generics.ListCreateAPIView):
     queryset = NewsLetter.objects.all()
     serializer_class = NewsLetterSerializer
 
     def perform_create(self, serializer):
+        # Foydalanuvchi tomonidan kelgan so'rov ma'lumotlariga avtomatik ravishda foydalanuvchi ni qo'shing
+        serializer.save(user=self.request.user)
 
-        # Ensure the user has a profile before attempting to use it
-        user = self.request.user
-        profile = UserProfile.objects.get(user=user)
-        serializer.save(user=user, profile=profile)
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        return response
 
 
 class UserProfileListCreateView(generics.ListCreateAPIView):
@@ -141,6 +143,8 @@ class UserProfileListCreateView(generics.ListCreateAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser]
+
+
 #
 #
 # class UserProfileDetailView(UpdateAPIView):
@@ -150,10 +154,41 @@ class UserProfileListCreateView(generics.ListCreateAPIView):
 #     parser_classes = [MultiPartParser]
 
 
-class UserUpdateView(generics.UpdateAPIView):
-    serializer_class = UserUpdateSerializer
+class UserUpdateView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ExtendedUserProfileSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser]
 
     def get_object(self):
         return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        # Update phone_number
+        if 'phone_number' in request.data:
+            request.user.phone_number = request.data['phone_number']
+            request.user.save()
+
+        # Update password
+        if 'password' in request.data:
+            password = request.data['password']
+            password_confirm = request.data['password_confirm']
+            if password == password_confirm:
+                request.user.set_password(password)
+                request.user.save()
+            else:
+                return Response({'error': 'Password and password_confirm do not match'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        # Update image
+        if 'image' in request.data:
+            instance.image = request.data['image']
+            instance.save()
+
+        serializer.save()
+
+        return Response(serializer.data)

@@ -178,7 +178,6 @@ class About(models.Model):
 
 class NewsLetter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, blank=True, null=True)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
