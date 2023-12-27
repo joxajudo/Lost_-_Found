@@ -87,14 +87,7 @@ from rest_framework import serializers
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserProfile
-        fields = ['image', 'gender']  # Include any other fields you want to expose through the API.
+        model = User
+        fields = ['image', 'username', 'gender']  # Include any other fields you want to expose through the API.
 
-class ExtendedUserProfileSerializer(UserProfileSerializer):
-    phone_number = serializers.CharField(allow_blank=True)
-    password = serializers.CharField(write_only=True, validators=[MinLengthValidator(limit_value=8)])
-    password_confirm = serializers.CharField(write_only=True)
-
-    class Meta(UserProfileSerializer.Meta):
-        fields = UserProfileSerializer.Meta.fields + ['phone_number', 'password', 'password_confirm']
 # I made many changes in this site

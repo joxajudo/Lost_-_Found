@@ -14,7 +14,7 @@ from app.models import Category, Item, User, SubCategory, About, AboutCategory, 
 from app.permission import IsAuthorOrReadOnly
 from app.serializers.other import CategorySerializer, ItemSerializer, UserSerializer, SubCategorySerializer, \
     AboutSerializer, AboutCategorySerializer, UserModelSerializer, NewsLetterSerializer, UserProfileSerializer, \
-    UserUpdateSerializer, ExtendedUserProfileSerializer
+    UserUpdateSerializer, UserProfileSerializer
 
 
 class CategoryViewSet(ListAPIView):
@@ -157,7 +157,7 @@ class UserProfileListCreateView(generics.ListCreateAPIView):
 
 
 class UserUpdateView(RetrieveUpdateDestroyAPIView):
-    serializer_class = ExtendedUserProfileSerializer
+    serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser]
 

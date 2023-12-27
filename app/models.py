@@ -39,8 +39,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         unique=True
     )
-    image = models.ImageField(upload_to='images/',default='images/logo.jpg')
-    username = models.CharField(max_length=155, unique=False)
+
+    class Gender(models.TextChoices):
+        MALE = 'MALE'
+        FEMALE = 'FEMALE'
+
+    image = models.ImageField(upload_to='images/', default='images/logo.jpg')
+    username = models.CharField(max_length=155, unique=False, null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=Gender.choices)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, null=True, blank=True)
@@ -56,7 +62,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             self.activation_key_expires = timezone.make_naive(self.activation_key_expires)
 
         super().save(*args, **kwargs)
-
 
 
 class Category(models.Model):
@@ -146,7 +151,7 @@ class UserProfile(models.Model):
         FEMALE = 'FEMALE'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/',default='images/logo.jpg',null=True, blank=True)
+    image = models.ImageField(upload_to='images/', default='images/logo.jpg',null=True, blank=True)
     gender = models.CharField(max_length=10, choices=Gender.choices, default=Gender)
 
 
