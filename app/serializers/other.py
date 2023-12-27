@@ -66,12 +66,17 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 class NewsLetterSerializer(serializers.ModelSerializer):
     user_username = serializers.ReadOnlyField(source='user.username', read_only=True)
-    user_image = serializers.ReadOnlyField(source='user.image.url', read_only=True)
+    user_image = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = NewsLetter
-        fields = ['id','user','user_username', 'user_image', 'comment', 'created_at']
+        fields = ['id', 'user', 'user_username', 'user_image', 'comment', 'created_at']
 
+    def get_user_image(self, instance):
+        user = instance.user
+        if user and hasattr(user, 'image') and user.image:
+            return user.image.url
+        return None
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super(NewsLetterSerializer, self).create(validated_data)

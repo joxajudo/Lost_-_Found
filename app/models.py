@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         unique=True
     )
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/',default='images/logo.jpg')
     username = models.CharField(max_length=155, unique=False)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -146,7 +146,7 @@ class UserProfile(models.Model):
         FEMALE = 'FEMALE'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/',default='images/logo.jpg',null=True, blank=True)
     gender = models.CharField(max_length=10, choices=Gender.choices, default=Gender)
 
 
