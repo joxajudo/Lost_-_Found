@@ -77,6 +77,7 @@ class NewsLetterSerializer(serializers.ModelSerializer):
         if user and hasattr(user, 'image') and user.image:
             return user.image.url
         return None
+
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super(NewsLetterSerializer, self).create(validated_data)
