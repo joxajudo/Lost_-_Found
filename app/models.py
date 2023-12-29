@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 
 class CustomUserManager(BaseUserManager):
@@ -46,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     image = models.ImageField(upload_to='images/', default='images/logo.jpg')
     username = models.CharField(max_length=155, unique=False, null=True, blank=True)
-    gender = models.CharField(max_length=10, choices=Gender.choices)
+    gender = models.CharField(max_length=10, choices=Gender.choices, default=Gender.MALE)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, null=True, blank=True)
@@ -57,8 +58,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'phone_number'
 
     def save(self, *args, **kwargs):
-        # Aktivatsiya muddatini offset-naive qilamiz
-        if self.activation_key_expires:
+        # Only make the datetime naive if it's currently aware.
+        if self.activation_key_expires and timezone.is_aware(self.activation_key_expires):
             self.activation_key_expires = timezone.make_naive(self.activation_key_expires)
 
         super().save(*args, **kwargs)
@@ -66,22 +67,28 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Category(models.Model):
     image = models.ImageField(upload_to='images/')
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
+        ordering = (['name', ])
         verbose_name_plural = 'Categories'
 
 
 class SubCategory(models.Model):
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/', db_index=True)
     category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return f"{self.category.name} - {self.name}"
+
+    class Meta:
+        ordering = (['name', ])
+        index_together = (('id',))
+        verbose_name_plural = 'SubCategory'
 
 
 class Item(models.Model):
@@ -151,7 +158,7 @@ class UserProfile(models.Model):
         FEMALE = 'FEMALE'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/', default='images/logo.jpg',null=True, blank=True)
+    image = models.ImageField(upload_to='images/', default='images/logo.jpg', null=True, blank=True)
     gender = models.CharField(max_length=10, choices=Gender.choices, default=Gender)
 
 

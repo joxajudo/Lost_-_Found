@@ -26,7 +26,7 @@
       </libraries>
     </data-source>
     <data-source source="LOCAL" name="db [3]" uuid="897f9bc9-d43c-4082-ba74-9ca23c7e31ca">
-      <driver-ref>sqlite.xerial</driver-ref>
+      <driver-ref>b8d6bc0d-432d-4196-98da-559356932505</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:C:\Users\darkw\LostFounda\db.sqlite3</jdbc-url>
@@ -44,7 +44,7 @@
       </libraries>
     </data-source>
     <data-source source="LOCAL" name="db [3]" uuid="fc67135e-1d48-4e60-b7f3-7efd00655bee">
-      <driver-ref>sqlite.xerial</driver-ref>
+      <driver-ref>b8d6bc0d-432d-4196-98da-559356932505</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/db.sqlite3</jdbc-url>

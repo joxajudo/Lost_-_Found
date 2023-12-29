@@ -24,6 +24,9 @@ class CategoryViewSet(ListAPIView):
     search_fields = ['name']
 
 
+
+
+
 class SubCategoryViewSet(ListAPIView):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
@@ -194,3 +197,26 @@ class UserUpdateView(RetrieveUpdateDestroyAPIView):
         serializer.save()
 
         return Response(serializer.data)
+
+
+class SubCategoryListView(ListAPIView):
+    def get(self, request, category_slug=None):
+        subcategory = SubCategory.objects.filter(available=True, subcategory__category_slug=category_slug)
+
+        main_categories = Category.objects.filter(parent_category=None)
+        data = {
+            'main_categories': CategorySerializer(main_categories, many=True).data
+        }
+
+        if category_slug:
+            sub_category = Category.objects.get(slug=category_slug)
+
+            if sub_category.children.exists():
+                categories = [sub_category] + list(sub_category.children.all())
+                sub_category = sub_category.filter(category__in=categories)
+            else:
+                sub_category = subcategory.filter(category=sub_category)
+            data['sub_category'] = CategorySerializer(sub_category).data
+
+        data['subcategory'] = SubCategorySerializer(subcategory, many=True).data
+        return Response(data)

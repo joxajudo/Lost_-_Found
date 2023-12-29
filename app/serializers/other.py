@@ -10,7 +10,7 @@ User = get_user_model()
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'image','password','phone_number']
+        fields = ['username', 'image', 'password', 'phone_number']
 
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)
@@ -43,13 +43,13 @@ class ItemSerializer(serializers.ModelSerializer):
 class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
-        fields = ['id', 'image', 'name']
+        fields = ['id', 'image', 'name', 'category', ]
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'image', 'name']
+        fields = ['id', 'image', 'name', ]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -90,5 +90,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['image', 'username', 'gender']  # Include any other fields you want to expose through the API.
-
 # I made many changes in this site

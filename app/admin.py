@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from app.models import Category, Item, User, SubCategory, About, AboutCategory,  NewsLetter
+from app.models import Category, Item, User, SubCategory, About, AboutCategory, NewsLetter
 
 admin.site.register(Category)
 admin.site.register(Item)

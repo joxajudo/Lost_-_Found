@@ -8,7 +8,7 @@ from app.views.message import MessageListCreateAPIView, MessageRetrieveAPIView
 from app.views.other import (ItemListCreateAPIView, ItemViewSet, CategoryViewSet, SubCategoryViewSet,
                              ItembyCategoryAPIView, ItembyTypeAPIView, ItembyUserAPIView, CurrentUserView,
                              ItembyRequestUserView, AboutCategoryViewSet, AboutViewSet, UserViewSet, NewsLetterViewSet,
-                             UserUpdateView, UserProfileListCreateView
+                             UserUpdateView, UserProfileListCreateView, SubCategoryListView
                              )
 from app.views.register_view import RegisterView
 from app.views.verification_code import VerifyPhoneNumberView
@@ -57,8 +57,9 @@ urlpatterns = [
     path('news-letter/', NewsLetterViewSet.as_view(), name='news-letter'),
 
     # User-Profile
-    path('profile/',UserProfileListCreateView.as_view(),name="profile"),
+    path('profile/', UserProfileListCreateView.as_view(), name="profile"),
     path('profile/edit/', UserUpdateView.as_view(), name='profile-edit'),
+
 
     path('', include(router.urls))
 ]
